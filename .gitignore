@@ -1,0 +1,11 @@
+.env
+node_modules
+*.log
+/build
+.DS_Store
+shrinkwrap.yaml
+.vscode
+.firebase
+_private
+
+.now
