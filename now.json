@@ -1,8 +1,8 @@
 {
   "env": {
-    "DB_ENV": "v2",
+    "DB_ENV": "production",
     "DEBUG": "api",
-    "MONGO_URI_V2": "@bestofjs_v2_mongo_uri",
+    "MONGO_URI_PRODUCTION": "@mongo_uri_production",
     "GITHUB_CLIENT_ID": "@github_client_id",
     "GITHUB_CLIENT_SECRET": "@github_client_secret",
     "GITHUB_USERNAME": "@github_username"

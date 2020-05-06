@@ -27,7 +27,10 @@ async function connect() {
   const uri = process.env[key];
   if (!uri) throw new Error(`No env. variable '${key}'`);
   debug("Connecting", `${uri.slice(0, 12)}...`);
-  await mongoose.connect(uri, { useMongoClient: true });
+  await mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   debug("Connected");
 }
 
@@ -57,7 +60,7 @@ function convertProject(project) {
     name,
     icon,
     tags,
-    timeSeries
+    timeSeries,
   } = project;
 
   const result = {
@@ -68,8 +71,8 @@ function convertProject(project) {
     icon: icon ? icon.url : null,
     bundle,
     packageSize,
-    tags: tags.map(tag => tag.code),
-    timeSeries
+    tags: tags.map((tag) => tag.code),
+    timeSeries,
   };
   return result;
 }

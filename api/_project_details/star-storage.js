@@ -22,7 +22,7 @@ export function createStarStorage(collection) {
     debug("Finding snapshot document for year", year);
     const doc = await collection.findOne({
       project: ObjectId(projectId),
-      year
+      year,
     });
     return doc;
   }
@@ -38,7 +38,7 @@ export function createStarStorage(collection) {
       query,
       {
         $set: { months, updatedAt: new Date() },
-        $setOnInsert: { createdAt: new Date() }
+        $setOnInsert: { createdAt: new Date() },
       },
 
       { upsert: true }
@@ -61,7 +61,7 @@ export function createStarStorage(collection) {
     const doc = await getDocumentByYear(projectId, year);
 
     const currentMonths = doc ? doc.months : [];
-    const updatedMonths = produce(currentMonths, months => {
+    const updatedMonths = produce(currentMonths, (months) => {
       const monthItem = months.find(findByMonth(month));
       if (!monthItem) {
         months.push({ month, snapshots: [{ day, stars }] });
@@ -82,8 +82,8 @@ export function createStarStorage(collection) {
     return true;
   }
 
-  const findByMonth = month => item => item.month === month;
-  const findByDay = day => item => item.day === day;
+  const findByMonth = (month) => (item) => item.month === month;
+  const findByDay = (day) => (item) => item.day === day;
 
   async function getAllSnapshots(projectId) {
     const docs = await getDocuments(projectId);
@@ -115,9 +115,9 @@ export function createStarStorage(collection) {
       const monthly = computeMonthlyTrends(snapshots, { currentDate });
       return {
         daily,
-        monthly
+        monthly,
       };
-    }
+    },
   };
 }
 
@@ -144,10 +144,10 @@ export function computeTrends(snapshots) {
   snapshots.reverse();
   const mostRecentSnapshot = snapshots[0];
 
-  const findSnapshotDaysAgo = days =>
-    snapshots.find(snapshot => diffDay(mostRecentSnapshot, snapshot) >= days);
+  const findSnapshotDaysAgo = (days) =>
+    snapshots.find((snapshot) => diffDay(mostRecentSnapshot, snapshot) >= days);
 
-  const getDelta = days => {
+  const getDelta = (days) => {
     const snapshot = findSnapshotDaysAgo(days);
     if (!snapshot) return undefined;
     return mostRecentSnapshot.stars - snapshot.stars;
@@ -158,7 +158,7 @@ export function computeTrends(snapshots) {
     weekly: getDelta(7),
     monthly: getDelta(30),
     quarterly: getDelta(90),
-    yearly: getDelta(365)
+    yearly: getDelta(365),
   };
 }
 
@@ -171,7 +171,7 @@ export function computeDailyTrends(snapshots, { count = 366 } = {}) {
     (acc, snapshot) => {
       return {
         deltas: acc.deltas.concat(snapshot.stars - acc.previous),
-        previous: snapshot.stars
+        previous: snapshot.stars,
       };
     },
     { deltas: [], previous: value0 }
@@ -189,7 +189,7 @@ export function computeMonthlyTrends(
   const grouped = groupBy(snapshots, ({ year, month }) => `${year}/${month}`);
 
   return Object.values(grouped)
-    .map(group => {
+    .map((group) => {
       const firstSnapshot = group[0];
       const lastSnapshot = group[group.length - 1];
       const { year, month, stars, day } = firstSnapshot;
@@ -198,7 +198,7 @@ export function computeMonthlyTrends(
         month,
         firstDay: day,
         lastDay: lastSnapshot.day,
-        delta: lastSnapshot.stars - stars
+        delta: lastSnapshot.stars - stars,
       };
     })
     .filter(({ firstDay }) => firstDay === 1)
