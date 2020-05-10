@@ -1,6 +1,6 @@
 # Best of JavaScript Serverless
 
-Serverless functions developed and hosted using [Zeit serverless functions](https://zeit.co/docs/v2/serverless-functions/introduction.amp)
+Serverless functions developed and hosted using [Vercel serverless functions](https://vercel.com/docs/v2/serverless-functions/introduction.amp)
 
 ## Functions
 
@@ -22,8 +22,22 @@ Return the number of monthly downloads on NPM
 
 `/api/package-monthly-downloads?packageName=redux`
 
-## Local development
+## Development workflow
+
+Local development:
 
 ```shell
 now dev
+```
+
+Deploy the "preview":
+
+```shell
+now
+```
+
+Deploy to production:
+
+```shell
+now --prod
 ```
