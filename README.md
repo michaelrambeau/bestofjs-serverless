@@ -22,6 +22,14 @@ Return the number of monthly downloads on NPM
 
 `/api/package-monthly-downloads?packageName=redux`
 
+### `project-badge` end point
+
+Provide data to display customized badges using https://shields.io/ service
+
+`/api/project-badge?fullName=reduxjs/redux&since=weekly`
+
+More details about the badges: https://github.com/bestofjs/bestofjs-webui/issues/79
+
 ## Development workflow
 
 Local development:
