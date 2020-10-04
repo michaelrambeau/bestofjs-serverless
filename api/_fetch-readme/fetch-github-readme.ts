@@ -7,7 +7,7 @@ const debug = debugModule("api");
 
 export async function fetchReadme({ credentials, repo, branch = "master" }) {
   // Define an helper to send the error message
-  const sendError = message => {
+  const sendError = (message) => {
     throw new Error(message);
   };
 
@@ -19,10 +19,7 @@ export async function fetchReadme({ credentials, repo, branch = "master" }) {
   if (!username) return sendError("No Github credentials `username`");
   if (!client_id) return sendError("No Github credentials `client_id`");
   if (!client_secret) return sendError("No Github credentials `client_secret`");
-  const options = {
-    credentials,
-    branch
-  };
+  const options = { credentials, branch };
   try {
     debug("Fetching", repo);
     const html = await githubRequest(repo, "/readme", options);
@@ -44,15 +41,24 @@ export async function fetchReadme({ credentials, repo, branch = "master" }) {
 // Parameters:
 // - repo: full URL of the Github repository
 // - path (optional): added to the repository (ex: '/readme')
-const githubRequest = function(repo, path, options) {
-  const { credentials } = options;
-  let url = `https://api.github.com/repos/${repo}`;
-  url = `${url}${path}?client_id=${credentials.client_id}&client_secret=${credentials.client_secret}`;
+async function githubRequest(repo: string, path: string, options) {
+  const {
+    credentials: { username, client_id, client_secret },
+  } = options;
+  const url = `https://api.github.com/repos/${repo}${path}`;
   const requestOptions = {
     headers: {
-      "User-Agent": credentials.username,
-      Accept: "application/vnd.github.VERSION.html"
-    }
+      "User-Agent": username,
+      Authorization: `Basic ${encodeCredentials(client_id, client_secret)}`,
+      Accept: "application/vnd.github.VERSION.html",
+    },
   };
-  return fetch(url, requestOptions).then(res => res.text());
-};
+
+  const response = await fetch(url, requestOptions);
+  debug("Remaining API calls", response.headers.get("x-ratelimit-remaining")); // auth credentials are needed to avoid the default limit (60)
+  return response.text();
+}
+
+function encodeCredentials(username: string, password: string): string {
+  return Buffer.from(username + ":" + password).toString("base64");
+}
