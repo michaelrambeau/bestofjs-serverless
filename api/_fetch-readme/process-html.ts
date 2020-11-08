@@ -18,7 +18,7 @@ export function processHtml({ html, repo, branch }) {
   readme = readme.replace(/href="\/?(.+?)"/gi, function (match, p1) {
     // If the URL starts with http => do nothing
     if (p1.indexOf("http") === 0) return match;
-    console.log("Replace link relative URL", p1);
+    debug("Replace link relative URL", p1);
     return `href="${root}/blob/${branch}/${p1}"`;
   });
 

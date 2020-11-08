@@ -201,7 +201,6 @@ export function computeMonthlyTrends(
         delta: lastSnapshot.stars - stars,
       };
     })
-    .filter(({ firstDay }) => firstDay === 1)
     .filter(
       ({ year, month }) =>
         !(month === currentDate.month && year === currentDate.year)

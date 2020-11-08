@@ -8,4 +8,4 @@ shrinkwrap.yaml
 .firebase
 _private
 
-.now
+.vercel
