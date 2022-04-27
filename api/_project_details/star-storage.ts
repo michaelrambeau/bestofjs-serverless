@@ -1,4 +1,4 @@
-import { groupBy, flattenDeep, orderBy, takeRight } from "lodash";
+import { groupBy, flattenDeep, orderBy, takeRight, times } from "lodash";
 import mongoose from "mongoose";
 import { DateTime } from "luxon";
 import { produce } from "immer";
@@ -162,21 +162,27 @@ export function computeTrends(snapshots) {
   };
 }
 
-export function computeDailyTrends(snapshots, { count = 366 } = {}) {
-  if (snapshots.length === 0) return [];
-  snapshots = takeRight(orderBy(snapshots, toDate, "asc"), count);
-
-  const value0 = snapshots[0].stars;
-  return snapshots.slice(1).reduce(
-    (acc, snapshot) => {
-      return {
-        deltas: acc.deltas.concat(snapshot.stars - acc.previous),
-        previous: snapshot.stars,
-      };
-    },
-    { deltas: [], previous: value0 }
-  ).deltas;
+function computeDailyTrends(snapshots) {
+  const dt = DateTime.fromJSDate(new Date());
+  const dates = times(366).map((i) => {
+    return normalizeDate(dt.minus({ day: i }).toJSDate());
+  });
+  return dates.slice(0, dates.length - 1).map((date, index) => {
+    const value1 = findStars(snapshots, date);
+    const value0 = findStars(snapshots, dates[index + 1]);
+    if (value1 === null || value0 === null) return null; // return `null` when we don't have data
+    return value1 - value0;
+  });
 }
+
+const findStars = (snapshots, date) => {
+  return (
+    snapshots.find(
+      ({ year, month, day }) =>
+        year === date.year && month === date.month && day === date.day
+    )?.stars || null
+  );
+};
 
 export function computeMonthlyTrends(
   snapshots,
@@ -189,6 +195,7 @@ export function computeMonthlyTrends(
   const grouped = groupBy(snapshots, ({ year, month }) => `${year}/${month}`);
 
   return Object.values(grouped)
+    .filter((group) => group.length > 1)
     .map((group) => {
       const firstSnapshot = group[0];
       const lastSnapshot = group[group.length - 1];
