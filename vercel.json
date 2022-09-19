@@ -2,7 +2,6 @@
   "env": {
     "DB_ENV": "production",
     "DEBUG": "api",
-    "MONGO_URI_PRODUCTION": "@mongo_uri_production",
     "GITHUB_CLIENT_ID": "@github_client_id",
     "GITHUB_CLIENT_SECRET": "@github_client_secret",
     "GITHUB_USERNAME": "@github_username"

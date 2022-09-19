@@ -36,11 +36,8 @@ async function connectToDatabase() {
   const key = `MONGO_URI_${dbEnv.toUpperCase()}`;
   const uri = process.env[key];
   if (!uri) throw new Error(`No env. variable '${key}'`);
-  debug("No cached connection, connecting to the DB", `${uri.slice(0, 15)}...`);
-  cachedDb = await mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  debug("No cached connection, connecting to the DB", `${uri.slice(0, 20)}...`);
+  cachedDb = await mongoose.connect(uri);
   debug("Connected");
 }
 
