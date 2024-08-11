@@ -1,9 +1,6 @@
 {
   "env": {
     "DB_ENV": "production",
-    "DEBUG": "api",
-    "GITHUB_CLIENT_ID": "@github_client_id",
-    "GITHUB_CLIENT_SECRET": "@github_client_secret",
-    "GITHUB_USERNAME": "@github_username"
+    "DEBUG": "api"
   }
 }

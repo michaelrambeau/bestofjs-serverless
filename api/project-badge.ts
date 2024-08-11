@@ -35,7 +35,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 };
 
 async function fetchProjectData(fullName) {
-  const url = "https://bestofjs-static-api.now.sh/projects.json";
+  const url = "https://bestofjs-static-api-v2.vercel.app/projects.json";
   const data = await fetch(url).then((r) => r.json());
   const projectData = data.projects.find(
     (project) => project.full_name === fullName
@@ -55,7 +55,7 @@ function getMessage(data, since) {
 function parseQueryParams(req: NowRequest) {
   const query = req.query;
   const fullName = query.fullName || query.fullname;
-  const sinceParam = query.since;
+  const sinceParam = query.since as string;
   const since = Object.keys(periods).includes(sinceParam)
     ? sinceParam
     : "daily";
